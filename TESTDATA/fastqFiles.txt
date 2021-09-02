@@ -1,0 +1,5 @@
+TESTDATA/split.aa_R1.fastq.gz	TESTDATA/split.aa_R2.fastq.gz
+TESTDATA/split.ab_R1.fastq.gz	TESTDATA/split.ab_R2.fastq.gz
+TESTDATA/split.ac_R1.fastq.gz	TESTDATA/split.ac_R2.fastq.gz
+TESTDATA/split.ad_R1.fastq.gz	TESTDATA/split.ad_R2.fastq.gz
+TESTDATA/split.ae_R1.fastq.gz	TESTDATA/split.ae_R2.fastq.gz

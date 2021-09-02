@@ -1,0 +1,588 @@
+<!DOCTYPE HTML>
+
+<html>
+
+
+	<!-- Tab title and ccs links -->
+	<head>
+		<title>3'SRP - {{project.projectName}}</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="stylesheet" href="./{{config.report_folder}}/assets/css/main.css"/>
+		<link rel="stylesheet" type="text/css" href="./{{config.report_folder}}/assets/css/jquery.dataTables.min.css">
+		<link rel="stylesheet" type="text/css" href="./{{config.report_folder}}/assets/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="./{{config.report_folder}}/assets/css/dataTables.bootstrap4.min.css">
+
+		<!-- Javascript script links -->
+		<script src="./{{config.report_folder}}/assets/js/jquery.min.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/jquery.scrolly.min.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/jquery.scrollzer.min.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/skel.min.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/util.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/main.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/jquery.min.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/jquery-3.3.1.js"></script>
+		<script type="text/javascript" src="./{{config.report_folder}}/assets/js/jquery.dataTables.min.js"></script>
+		<script scr="./{{config.report_folder}}/assets/js/dataTables.fixedHeader.min.js"></script>
+<!--		<script scr="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.bootstrap4.min.js"></script> -->
+		<script src="./{{config.report_folder}}/assets/js/highcharts.js"></script>
+		<script src="./{{config.report_folder}}/assets/js/exporting.js"></script>
+
+	</head>
+
+
+	<body>
+
+
+		<!-- GenoBiRD logo and href links -->
+		<div id="header">
+			<div class="top">
+				<div>
+					<span class="image featured"><img src="./{{config.report_folder}}/images/GenoBIRD.jpg" alt="GenoBiRD"/></span>
+				</div>
+
+
+				<!-- Left navigation menu -->
+				<nav id="nav">
+						<ul>
+							<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-home">Run</span></a></li>
+							<li><a href="#portfolio" id="portfolio-link" class="skel-layers-ignoreHref"><span class="icon fa-th">Samples</span></a></li>
+							<li><a href="#about" id="about-link" class="skel-layers-ignoreHref" onClick="toggle('navbar_res')"><span class="icon fa-bar-chart">Results</span></a></li>
+								<ul id="navbar_res" style="display:none">
+									<div align="left">
+										<div align="center"><font size="2"><u>Primary analysis</u></font></div>
+										<li><font size="2"><a href="#FM">- FASTQC / MULTIQC</a></font></li>
+										<li><font size="2"><a href="#BRR">- Read distribution</a></font></li>
+										<li><font size="2"><a href="#DG">- Detected genes</a></font></li>
+										<div align="center"><font size="2"><u>Secondary analysis</u></font></div>
+										<li><font size="2"><a href="#ACP">- PCA</a></font></li>
+										<li><font size="2"><a href="#HMC">- Sample correlation</a></font></li>
+										<li><font size="2"><a href="#DEG">- Number of DEG found</a></font></li>
+										<li><font size="2"><a href="#MVC" onClick="toggle('navbar_plot')">- Comparisons</a></font></li>
+											<ul id="navbar_plot" style="display:none">
+											{# Display all the conditions #}
+											{% for i in conditionVS %}
+											<div align="right">
+												<li><font size="2"><a href="#{{i.condition1}}__vs__{{i.condition2}}">{{i.condition1}} vs {{i.condition2}}</a></font></li>
+											</div>
+											{% endfor %}
+											</ul>
+									</div>
+								</ul>
+								<li><a href="#sup" id="about-link" class="skel-layers-ignoreHref" onClick="toggle('navbar_annexes')"><span class="icon fa-area-chart">Supplemental data</span></a></li>
+									<ul id="navbar_annexes" style="display:none">
+										<div align="center"><font size="2"><u><a href="#fastqclinks">FASTQC links</a></u></font></div>
+										<div align="center"><font size="2"><u><a href="#deseqreslinks">DE genes links</a></u></font></div>
+									</ul>
+						</ul>
+				</nav>
+
+				<!-- Bottom navigation menu -->
+				<div class="bottom">
+
+					<!-- Social Icons -->
+						<ul class="icons">
+							<li><a href="http://www.sfrsante.univ-nantes.fr/plates-formes/analyses-omiques-purification-et-criblage/genobird-infrastructure-de-genomique-et-bioinformatique-2288900.kjsp" class="icon fa-internet-explorer"><span class="label">Website</span></a></li>
+							<li><a href="mailto:pf-genomique@univ-nantes.fr" class="icon fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Display of project informations -->
+		<div id="main">
+			<section id="top" class="one dark cover">
+				<div class="container">
+					<header>
+						<h2><u>Project informations</u></h2>
+						<div id="infos_g" style="float:left; margin-left:200px"></div>
+							<u><div>Project : {{project.projectName}}</u></div>
+							<u><div>Date : {{project.date}}</u></div>
+							<u><div>Reference genome : {{project.genome}}</u></div>
+						<div id="infos_c" style="float:right; margin-right:200px; margin-top:35px"></div>
+					</header>
+				</div>
+			</section>
+
+			<!-- Display of samples table -->
+			<section id="portfolio" class="two">
+				<div class="container">
+					<header>
+						<h2><B><u>Samples</B></u></h2>
+					</header>
+					<input type="button" onClick="toggle('navbar_table')" value="Display table"/>
+					<div id="navbar_table" class="content" style="display:none">
+						<table id="data-table" class="display compact" style="width:100%">
+        					<thead>
+		    					<tr>
+		        					<th>Well</th>
+		        					<th>Name</th>
+		        					<th>Index</th>
+		        					<th>Condition</th>
+		    					</tr>
+						</thead>
+      					</table>
+					</div>
+				</div>
+			</section>
+			
+
+			<!-- Display of the results -->
+			<section id="about" class="three">
+				<div class="container">
+
+
+					<!-- FASTQC HighCharts -->
+					<header>
+						<h2><B><u>Results</u></B></h2><br/>
+						<h2 id="FM">FastQC summary</h2>
+					</header>
+					<p><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a> is a quality control tool for high throughput sequence data. The data shown here is the total number of reads assigned to each sample.</p>
+					<div id="fastqc" style="width:100%"></div>
+					<HR align="center" size="6" width="100%">
+
+
+					<!-- MULTIQC links -->
+					<header><br/>
+						<h2>MultiQC summary</h2>
+					</header>
+					<p><a href="http://multiqc.info/">MultiQC</a> aggregates results from bioinformatics analyses across many samples into a single report. The report shows all quality controls performed by <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a></p>
+					<iframe src="./{{config.multiqc_folder}}/multiqc_report.html" style="width:100%; height:700px;"></iframe>
+					<HR align="center" size="6" width="100%">
+
+			
+					<!-- Barplot HighCharts reads repartition -->
+					<header><br/>
+						<h2 id="BRR">Read distribution</h2>
+					</header>
+					<p>The read distribution shows, for all samples, the number of reads assigned, aligned on the reference transcriptome, aligned on known refseq sequences and aligned on known refseq sequences taking into account the Unique Molecule Identifier (duplicate UMIs removed).</p>
+					<div id="barplot" style="width:100%"></div>
+					<HR align="center" size="6" width="100%">
+
+
+					<!-- Barplot HighCharts number of detected genes -->
+					<header><br/>
+						<h2 id="DG">Genes detected</h2>
+					</header>
+					<p>The number of genes detected by sample is an important quality control. Samples with too few detected genes may cause the comparisons to fail when trying to detect genes differentially expressed.</p>
+					<div id="detected_genes" style="width:100%"></div>
+					<HR align="center" size="6" width="100%">
+
+
+					<!-- Filtering of samples -->
+					<header><br/>
+						<h2 id="FILTER">Sample filtering</h2>
+					</header>
+					<p>In order to be taken into account in secondary analysis, samples and genes must meet the following requirements:</p>
+					<ul>
+						<li>Genes have to be expressed in at least <u>{{project.minRep}}</u> samples</li>
+						<li>Samples must express at least <u>{{project.minGenes}}</u> genes</li>
+						<li>Samples must have at least <u>{{project.minReads}}</u> reads assigned</li>
+					</ul> 
+					{% if project.filteredExists is defined %}
+						<p>Samples filtered out for this analysis:</p>
+						<table id="filtered_samples" class="display compact" style="width:100%">
+							<thead>
+			    					<tr>
+									<th>Sample</th>
+									<th>#Genes</th>
+									<th>#Reads</th>
+			    					</tr>
+							</thead>
+						</table>
+					{% else %}
+						<p>No samples have been filtered out for this analysis.</p>
+					{% endif %}
+
+					<HR align="center" size="6" width="100%">
+
+					<!-- Display of PCA png -->
+					<header><br/>
+						<h2 id="ACP">PCA</h2>
+					</header>
+					<p>The Principal Component Analysis groups samples according to their transcriptomic profiles. All conditions in the project are shown here.</p>
+					<img src="./{{config.de_folder}}/PCA.png" style="width:100%">
+					</br></br>
+					<a href="./{{config.de_folder}}/NormAndPCA.pdf" target="_blank">View full PCA report</a>
+					<HR align="center" size="6" width="100%">
+
+
+					<!-- Display of Pearson Heatmap png -->
+					<header><br/>
+						<h2 id="HMC">Correlation heatmap</h2>
+					</header>
+					<p>The Correlation Heatmap clusters the samples according to their transcriptomic profiles.</p>
+					<img src="./{{config.de_folder}}/HeatmapCorPearson.png" style="width:100%">
+					<HR align="center" size="6" width="100%">
+
+					<!-- Display number of DEG found for all comparisons -->
+					<header><br/>
+						<h2 id="DEG">Number of differentially expressed genes found</h2>
+					</header>
+					<table id="nb_deg" class="display compact" style="width:100%">
+						<thead>
+								<tr>
+								<th>Condition 1</th>
+								<th>Condition 2</th>
+								<th>#DEG</th>
+								</tr>
+						</thead>
+					</table>
+					<HR align="center" size="6" width="100%">
+
+					<!-- MA-plot / Volcano-plot / ClusterDE display -->
+					<header><br/>
+						<h2 id="MVC">Comparisons</h2>
+					</header>
+					{# Display of the comparisons #}
+					{% for i in conditionVS %}
+							<header><br/><h3 id="{{i.condition1}}__vs__{{i.condition2}}">Comparison : {{i.condition1}} vs {{i.condition2}}</h3></header>
+						{% if deseqres[i.condition1+"__vs__"+i.condition2].counts == 0 %}
+							<p>There are no differentially expressed genes found for this comparison.</p>
+						{% else %}
+							{# Display of the corresponding png #}
+							<header><br/><h4>MA-plot</h4></header>
+							<p>An MA-plot is a plot of log-fold change (M-values, i.e. the log of the ratio of level counts for each gene between two conditions) against the mean counts (A-values, i.e.  the average level counts for each gene across the two conditions). Genes are colored accordingly: Green = under-expressed, Grey = no differential expression, Red = over-expressed. The gene names displayed are the 50 genes with the lowest p-value.</p>
+							<img src="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/MA-plot.png" style="width:70%"><br/>
+							<header><br/><h4>Volcano-plot</h4></header>
+							<p>The volcano plot is a type of scatter-plot that is used to quickly identify changes in large data sets composed of replicate data. It plots significance versus fold-change on the y and x axes, respectively. The red dots represent genes over-expressed and the green ones the genes under-expressed.</p>
+							<img src="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/Volcano-plot.png" style="width:70%"><br/>
+							<header><br/><h4>Clustering of DE genes</h4></header>
+							{% if deseqres[i.condition1+"__vs__"+i.condition2].counts > 9 %}
+								<p>The clustering algorithms are useful for identifying biologically relevant groups of genes and samples. This graph shows the clustering of the differentially expressed genes identified for this comparison and the clustering of the samples according to the expression of theses genes.</p>
+								<img src="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/clustDEgene.png" style="width:90%"><br/><br/>
+								<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/clustDEgene.pdf" target="_blank">View clustering for all/comparison samples</a><br/><br/>
+							{% else %}
+								<p>No clustering of the samples for the differentially expressed genes has been created since there are too few genes (&lt;10).</p>
+							{% endif %}
+						
+							<header><br/><h4>DE genes table</h4></header>
+							<p>The Differentially Expressed Genes table lists the genes over and under expressed for this comparison. You can display the DEG with the button below or download the full table of deseq2 results.</p>
+							<input type="button" onClick="toggle('deseq_table_{{i.condition1}}__vs__{{i.condition2}}')" value="Display table" />
+							<div id="deseq_table_{{i.condition1}}__vs__{{i.condition2}}" class="content" style="display:none">
+							<table id="deseq-table-{{i.condition1}}__vs__{{i.condition2}}" class="display compact" style="width:100%">
+							<thead>
+			    					<tr>
+									<th>Gene</th>
+									<th>baseMean</th>
+									<th>log2FC</th>
+									<th>lfcSE</th>
+									<th>stat</th>
+									<th>pvalue</th>
+									<th>padj</th>
+									<th>meanInComp</th>
+			    					</tr>
+							</thead>
+	      						</table>
+							</div>
+							</br></br>
+							<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/DEseqResFiltered.tsv">Download DEG deseq2 results table</a><br/>
+							<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/DEseqRes.tsv">Download full deseq2 results table</a><br/>
+							<header><br/><h4>Fonctionnal annotation enrichment</h4></header>
+
+
+							{% if deseqres[i.condition1+"__vs__"+i.condition2].counts > 9 %}
+
+								<p>GO terms enrichment analysis will find which GO terms are over-represented (or under-represented) for the differentially expressed genes.</p>
+								<img src="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/dotplotGO.png" style="width:70%"><br/></br>
+								<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/annotGo.txt">Download GO annotations enrichment table</a><br/><br/>
+								<p>KEGG terms enrichment analysis will find which KEGG pathways are over-represented (or under-represented) for the differentially expressed genes.</p>
+								<img src="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/dotplotKEGG.png" style="width:70%"><br/></br>
+								<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/annotKegg.txt">Download KEGG pathways enrichment table</a><br/><br/>
+
+							{% else %}
+								<p>No fonctionnal annotation enrichment performed since there are too few differentially expressed genes (&lt;10).</p>
+							{% endif %}
+
+							<header><br/><h4>Gene set enrichment analysis</h4></header>
+							<p>GSEA is a computational method that determines whether an a priori defined set of genes shows statistically significant, concordant differences between two biological states. All genes (not just DEG) are used to perform this analysis.</p>
+							<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/gseGo.txt">Download GO GSEA results table</a><br/>
+							<a href="./{{config.de_folder}}/{{i.condition1}}__vs__{{i.condition2}}/gseKegg.txt">Download KEGG GSEA results table</a><br/>
+							<script>
+								$(document).ready(function() {
+									gen_table("deseq-table-{{i.condition1}}__vs__{{i.condition2}}","{{i.condition1}}__vs__{{i.condition2}}")
+									});
+							</script>
+						{% endif %}
+					{% endfor %}
+
+
+				</div>
+			</section>
+			<!-- End of results part -->
+
+
+			<!-- Display of the annexes -->
+			<section id="sup" class="two">
+				<div class="container">
+
+					
+					<!-- FASTQC reports links -->
+					<header>
+						<h2><B><u>Supplemental data</B></u></h2><br/>
+						<h2 id="fastqclinks">FastQC report links</h2>
+					</header>
+					{# Display the fastqc links according to the various conditions #}
+					{% for s in samples %}
+						<a href="./{{config.fastqc_folder}}/{{s.name}}_fastqc.html">{{s.name}} FastQC html report</a><br/>
+					{% endfor %}
+					<HR align="center" size="6" width="100%">
+
+					
+					<!-- DESeqRes files links -->
+					<header><br/>
+						<h2 id="deseqreslinks">Deseq2 results</h2>
+					</header>
+					{# DESeqRes files display #}
+					{% for c in conditionVS %}
+					<a href="./{{config.de_folder}}/{{c.condition1}}__vs__{{c.condition2}}/DEseqResFiltered.tsv">{{c.condition1}} vs {{c.condition2}} DEG deseq2 results table</a><br/>
+					<a href="./{{config.de_folder}}/{{c.condition1}}__vs__{{c.condition2}}/DEseqRes.tsv">{{c.condition1}} vs {{c.condition2}} Full deseq2 results table</a><br/>	
+					{% endfor %}				
+					<HR align="center" size="6" width="100%">
+
+
+					<!-- Used tools display -->
+					<header><br/>
+					{# Display of the tools used #}
+						<div>Tools used in analysis : {{packages}}</div>
+					</header>
+
+
+				</div>
+			</section>
+			<!-- End of annexes part -->
+
+
+		</div><!-- div id="main" -->
+	</body>
+
+
+</html>
+
+
+<!-- Java Script -->
+
+<!-- Collapse nav menu and table-->
+<script>
+	function toggle(id){
+		var n = document.getElementById(id);
+		n.style.display = (n.style.display != 'none' ? 'none' : '' );
+	}
+</script>
+
+
+<!-- Data table for samples informations -->
+<script>
+
+	$(document).ready(function(){
+	    	$('#data-table').DataTable({
+			"data":{{samples}},
+			"columns":[ 
+		    	{"data":"well"},
+		    	{"data":"name"},
+		    	{"data":"index"},
+		    	{"data":"condition"}
+	       		]
+	    	});
+	});
+
+	$(document).ready(function(){
+	    	$('#filtered_samples').DataTable({
+			"data":{{project.filteredSamples}},
+			"columns":[ 
+		    	{"data":"sample"},
+		    	{"data":"totalGenEx"},
+		    	{"data":"totalCounts"}
+	       		]
+	    	});
+	});
+
+	$(document).ready(function(){
+	    	$('#nb_deg').DataTable({
+			"data":{{deseqres.nbdeg}},
+			"columns":[ 
+		    	{"data":"cond1"},
+		    	{"data":"cond2"},
+		    	{"data":"count"}
+	       		]
+	    	});
+	});
+
+	function gen_table(table_id, comp){
+	    	$('#'+table_id).DataTable({
+			"data":{{deseqres}}[comp]["genes"],
+			"columns":[ 
+		    	{"data":"Gene"},
+			{"data":"baseMean"},
+		    	{"data":"log2FC"},
+		    	{"data":"lfcSE"},
+		    	{"data":"stat"},
+			{"data":"pvalue"},
+			{"data":"padj"},
+			{"data":"meanInComp"}
+	       		]
+	    	});
+	}
+</script>
+
+<!-- Fastqc HighCharts -->
+<script>
+$(function(){
+        $('#fastqc').highcharts({
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: [{
+                categories: {{fastqcChart.samples}},
+                crosshair: true
+            }],
+            yAxis: [{
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                title: {
+                    text: 'Number of total sequences',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                }
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 100,
+                verticalAlign: 'top',
+                y: 0,
+                floating: true,
+                draggable: true,
+                borderWidth: 1,
+                borderRadius: 5,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#ECF1F1'
+            },
+            series: [{
+                name: 'Number of total sequences',
+                type: 'spline',
+                data: {{fastqcChart.totseq}}
+
+	    }]
+        });
+    });
+</script>
+
+<!-- Barplot HighCharts reads repartition -->
+<script>
+$(function(){
+        $('#barplot').highcharts({
+    		chart: {
+				zoomType: 'xy',
+				type: 'column'
+			},
+			title: {
+				text: ''
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: {{barplotChart.Samples}},
+				crosshair: true
+			},
+			yAxis: {
+				title: {
+				    text: 'Number of reads'
+				}
+			},
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+				    '<td style="padding:0"><b>{point.y:1f}</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+				    pointPadding: 0.2,
+				    borderWidth: 0
+				}
+			},
+			series: [{
+				name: 'Assigned',
+				data: {{barplotChart.Assigned}}
+
+			}, {
+				name: 'Aligned',
+				data: {{barplotChart.Aligned}}
+
+			}, {
+				name: 'Refseq_Total',
+				data: {{barplotChart.Refseq_Total}}
+
+			}, {
+				name: 'Refseq_UMI',
+				data: {{barplotChart.Refseq_UMI}}
+			}]
+		});
+});
+</script>
+
+
+<!-- Barplot HighCharts number of detected genes -->
+<script>
+$(function(){
+        $('#detected_genes').highcharts({
+			chart: {
+				zoomType: 'xy',
+				type: 'column'
+			},
+			title: {
+				text: ''
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: {{barplotChart.Samples}},
+				crosshair: true
+			},
+			yAxis: {
+				min: 0,
+				title: {
+				    text: 'Number of detected genes'
+				}
+			},
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+				    '<td style="padding:0"><b>{point.y:1f}</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+				    pointPadding: 0.2,
+				    borderWidth: 0
+				}
+			},
+			series: [{
+				name: 'Number of detected genes',
+				data: {{barplotChart.Genes_Detected}}
+			}]
+		});
+});
+</script>

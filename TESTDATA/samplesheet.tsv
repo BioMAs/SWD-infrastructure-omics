@@ -1,0 +1,6 @@
+D09	AGACCT	sample1	TestProject	cond1	hg19
+E08	ACGGGG	sample2	TestProject	cond2	hg19
+F06	CCTGGC	sample3	TestProject	cond1	hg19
+G02	CGTGGG	sample4	TestProject	cond2	hg19
+G03	CTGCGG	sample5	TestProject	cond3	hg19
+G11	GCGCTG	sample6	TestProject	cond3	hg19

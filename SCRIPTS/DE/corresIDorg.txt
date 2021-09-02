@@ -1,0 +1,5 @@
+build	go	kegg
+hg19	org.Hs.eg.db	hsa
+hg38	org.Hs.eg.db	hsa
+rn6	org.Rn.eg.db	rno
+mm10	org.Mm.eg.db	mmu

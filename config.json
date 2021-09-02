@@ -1,0 +1,108 @@
+{
+    "maindir": "/groups/irset/tdarde/projects/Denis_Habauzit/BRBseq/20191205/scripts/adapted_DGE-seq_pipeline/RESULTS",
+    "fastq_folder": "FASTQ",
+    "cutadapt_folder": "CUTADAPT",
+    "fastqc_folder": "FASTQC",
+    "multiqc_folder": "MULTIQC",
+    "align_folder": "ALIGNMENT",
+    "expression_folder": "EXPRESSION",
+    "de_folder": "DE",
+    "report_folder": "REPORT",
+    "ref_folder": "/groups/irset/tdarde/projects/Denis_Habauzit/BRBseq/20191205/scripts/adapted_DGE-seq_pipeline/TESTDATA/REFERENCES",
+    "samples": [
+        {
+            "well": "D09",
+            "name": "sample1",
+            "index": "AGACCT",
+            "project": "TestProject",
+            "condition": "cond1",
+            "species": "hg19"
+        },
+        {
+            "well": "E08",
+            "name": "sample2",
+            "index": "ACGGGG",
+            "project": "TestProject",
+            "condition": "cond2",
+            "species": "hg19"
+        },
+        {
+            "well": "F06",
+            "name": "sample3",
+            "index": "CCTGGC",
+            "project": "TestProject",
+            "condition": "cond1",
+            "species": "hg19"
+        },
+        {
+            "well": "G02",
+            "name": "sample4",
+            "index": "CGTGGG",
+            "project": "TestProject",
+            "condition": "cond2",
+            "species": "hg19"
+        },
+        {
+            "well": "G03",
+            "name": "sample5",
+            "index": "CTGCGG",
+            "project": "TestProject",
+            "condition": "cond3",
+            "species": "hg19"
+        },
+        {
+            "well": "G11",
+            "name": "sample6",
+            "index": "GCGCTG",
+            "project": "TestProject",
+            "condition": "cond3",
+            "species": "hg19"
+        }
+    ],
+    "comparisons": {
+        "TestProject": {
+            "species": "hg19",
+            "minRep": 2,
+            "minGenes": 0,
+            "minReads": 0,
+            "minLogFC": 0.58,
+            "performComps": true,
+            "comps": [
+                {
+                    "condition1": "cond1",
+                    "condition2": "cond2"
+                },
+                {
+                    "condition1": "cond1",
+                    "condition2": "cond3"
+                },
+                {
+                    "condition1": "cond2",
+                    "condition2": "cond3"
+                }
+            ]
+        }
+    },
+    "fastq_pairs": [
+        {
+            "read1": "TESTDATA/split.aa_R1.fastq.gz",
+            "read2": "TESTDATA/split.aa_R2.fastq.gz"
+        },
+        {
+            "read1": "TESTDATA/split.ab_R1.fastq.gz",
+            "read2": "TESTDATA/split.ab_R2.fastq.gz"
+        },
+        {
+            "read1": "TESTDATA/split.ac_R1.fastq.gz",
+            "read2": "TESTDATA/split.ac_R2.fastq.gz"
+        },
+        {
+            "read1": "TESTDATA/split.ad_R1.fastq.gz",
+            "read2": "TESTDATA/split.ad_R2.fastq.gz"
+        },
+        {
+            "read1": "TESTDATA/split.ae_R1.fastq.gz",
+            "read2": "TESTDATA/split.ae_R2.fastq.gz"
+        }
+    ]
+}
